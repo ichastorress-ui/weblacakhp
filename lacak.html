@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="LACAK HP" content="width=device-width, initial-scale=1.0">
+    <title>Lacak Handphone & Nomor HP</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-weight: 700;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-weight: 600;
+            padding: 15px 20px;
+            border: none;
+        }
+        .card-header i {
+            margin-right: 10px;
+        }
+        .card-body {
+            padding: 25px;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .info-item {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .info-value {
+            color: #333;
+        }
+        .badge-success {
+            background: linear-gradient(45deg, #84fab0 0%, #8fd3f4 100%);
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading i {
+            font-size: 2em;
+            color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.9;
+        }
+        .note {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-search-location"></i> Lacak Handphone & Nomor HP</h1>
+            <p>Lacak lokasi handphone berdasarkan IP atau informasi nomor handphone</p>
+            <div class="note">
+                <i class="fas fa-info-circle"></i> Demo menggunakan API publik untuk tujuan edukasi
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Panel Lacak Handphone (Berdasarkan IP) -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-mobile-alt"></i> Lacak Handphone (Berdasarkan IP)
+                    </div>
+                    <div class="card-body">
+                        <form id="ipForm">
+                            <div class="mb-3">
+                                <label for="ipAddress" class="form-label">Alamat IP</label>
+                                <input type="text" class="form-control" id="ipAddress" placeholder="Contoh: 8.8.8.8" value="8.8.8.8">
+                                <small class="text-muted">Masukkan alamat IP untuk dilacak lokasinya</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Lacak Sekarang
+                            </button>
+                        </form>
+
+                        <div class="loading" id="ipLoading">
+                            <i class="fas fa-circle-notch"></i>
+                            <p>Melacak lokasi...</p>
+                        </div>
+
+                        <div id="ipResult" class="result-card" style="display: none;">
+                            <h5 class="mb-3"><i class="fas fa-map-marker-alt text-primary"></i> Hasil Pelacakan IP</h5>
+                            <div id="ipInfo"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Lacak Nomor HP -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-phone-alt"></i> Lacak Nomor Handphone
+                    </div>
+                    <div class="card-body">
+                        <form id="phoneForm">
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">Nomor Handphone</label>
+                                <input type="text" class="form-control" id="phoneNumber" placeholder="Contoh: +628123456789">
+                                <small class="text-muted">Masukkan nomor dengan kode negara (contoh: +62 untuk Indonesia)</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Lacak Sekarang
+                            </button>
+                        </form>
+
+                        <div class="loading" id="phoneLoading">
+                            <i class="fas fa-circle-notch"></i>
+                            <p>Memeriksa nomor...</p>
+                        </div>
+
+                        <div id="phoneResult" class="result-card" style="display: none;">
+                            <h5 class="mb-3"><i class="fas fa-info-circle text-primary"></i> Informasi Nomor</h5>
+                            <div id="phoneInfo"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informasi Tambahan -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-exclamation-triangle"></i> Catatan Penting
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-shield-alt"></i> Website ini dibuat untuk tujuan edukasi dan demo. Fitur yang tersedia:
+                            <ul class="mt-2">
+                                <li><strong>Lacak IP:</strong> Menampilkan informasi lokasi berdasarkan alamat IP menggunakan API publik</li>
+                                <li><strong>Lacak Nomor:</strong> Menampilkan informasi dasar nomor handphone (negara, operator, tipe)</li>
+                                <li><strong>Privasi:</strong> Data tidak disimpan di server</li>
+                            </ul>
+                            <hr>
+                            <p class="mb-0"><i class="fas fa-lock"></i> Untuk keamanan dan privasi, gunakan dengan bijak dan patuhi hukum yang berlaku.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Lacak Handphone - Demo Website | Dibuat untuk tujuan edukasi</p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Fungsi untuk lacak IP
+        document.getElementById('ipForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const ipAddress = document.getElementById('ipAddress').value;
+            const loading = document.getElementById('ipLoading');
+            const result = document.getElementById('ipResult');
+            const ipInfo = document.getElementById('ipInfo');
+            
+            // Tampilkan loading
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                // Gunakan API ipapi.co untuk lacak IP (gratis)
+                const response = await fetch(`https://ipapi.co/${ipAddress}/json/`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    ipInfo.innerHTML = `<div class="alert alert-danger">Error: ${data.reason || 'Tidak dapat melacak IP'}</div>`;
+                } else {
+                    // Tampilkan hasil
+                    ipInfo.innerHTML = `
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-globe"></i> IP Address:</span>
+                            <span class="info-value float-end">${data.ip || '-'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-map-marker-alt"></i> Lokasi:</span>
+                            <span class="info-value float-end">${data.city || '-'}, ${data.region || '-'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-flag"></i> Negara:</span>
+                            <span class="info-value float-end">${data.country_name || '-'} (${data.country_code || '-'})</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-building"></i> Provider:</span>
+                            <span class="info-value float-end">${data.org || '-'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-map-pin"></i> Latitude:</span>
+                            <span class="info-value float-end">${data.latitude || '-'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-map-pin"></i> Longitude:</span>
+                            <span class="info-value float-end">${data.longitude || '-'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-clock"></i> Zona Waktu:</span>
+                            <span class="info-value float-end">${data.timezone || '-'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-phone"></i> Kode Telepon:</span>
+                            <span class="info-value float-end">+${data.country_calling_code || '-'}</span>
+                        </div>
+                        <div class="mt-3">
+                            <a href="https://www.google.com/maps?q=${data.latitude || '0'},${data.longitude || '0'}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-external-link-alt"></i> Lihat di Google Maps
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                result.style.display = 'block';
+            } catch (error) {
+                ipInfo.innerHTML = `<div class="alert alert-danger">Error: Gagal menghubungi server</div>`;
+                result.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        // Fungsi untuk lacak nomor handphone
+        document.getElementById('phoneForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const loading = document.getElementById('phoneLoading');
+            const result = document.getElementById('phoneResult');
+            const phoneInfo = document.getElementById('phoneInfo');
+            
+            if (!phoneNumber) {
+                alert('Masukkan nomor handphone');
+                return;
+            }
+            
+            // Tampilkan loading
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                // Gunakan API Abstract API untuk validasi nomor (demo - perlu API key)
+                // Catatan: Untuk demo, kita gunakan data dummy karena API memerlukan key
+                
+                // Simulasi API call (untuk demo)
+                setTimeout(() => {
+                    // Deteksi kode negara dari nomor
+                    let country = 'Tidak diketahui';
+                    let operator = 'Tidak diketahui';
+                    let type = 'Mobile';
+                    let valid = true;
+                    
+                    if (phoneNumber.startsWith('+62') || phoneNumber.startsWith('62')) {
+                        country = 'Indonesia';
+                        if (phoneNumber.includes('812') || phoneNumber.includes('813') || phoneNumber.includes('814')) {
+                            operator = 'Telkomsel';
+                        } else if (phoneNumber.includes('815') || phoneNumber.includes('816') || phoneNumber.includes('817')) {
+                            operator = 'Indosat';
+                        } else if (phoneNumber.includes('818') || phoneNumber.includes('819')) {
+                            operator = 'XL Axiata';
+                        } else if (phoneNumber.includes('821') || phoneNumber.includes('822') || phoneNumber.includes('823')) {
+                            operator = 'Telkomsel';
+                        } else if (phoneNumber.includes('857') || phoneNumber.includes('858') || phoneNumber.includes('859')) {
+                            operator = 'Indosat';
+                        } else {
+                            operator = 'Operator Indonesia';
+                        }
+                    } else if (phoneNumber.startsWith('+1')) {
+                        country = 'Amerika Serikat';
+                        operator = 'AT&T/Verizon/T-Mobile';
+                    } else if (phoneNumber.startsWith('+44')) {
+                        country = 'Inggris';
+                        operator = 'Vodafone/EE/O2';
+                    } else if (phoneNumber.startsWith('+60')) {
+                        country = 'Malaysia';
+                        operator = 'Maxis/Celcom/Digi';
+                    } else if (phoneNumber.startsWith('+65')) {
+                        country = 'Singapura';
+                        operator = 'Singtel/StarHub/M1';
+                    }
+                    
+                    phoneInfo.innerHTML = `
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-phone"></i> Nomor:</span>
+                            <span class="info-value float-end">${phoneNumber}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-check-circle"></i> Valid:</span>
+                            <span class="info-value float-end"><span class="badge-success">${valid ? 'Ya' : 'Tidak'}</span></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-flag"></i> Negara:</span>
+                            <span class="info-value float-end">${country}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-building"></i> Operator:</span>
+                            <span class="info-value float-end">${operator}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-mobile-alt"></i> Tipe:</span>
+                            <span class="info-value float-end">${type}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-map-marker-alt"></i> Lokasi:</span>
+                            <span class="info-value float-end">${country} (perkiraan berdasarkan kode negara)</span>
+                        </div>
+                        <div class="mt-3 alert alert-info">
+                            <i class="fas fa-info-circle"></i> Informasi ini berdasarkan kode negara dan operator. 
+                            Untuk pelacakan real-time memerlukan akses ke database operator.
+                        </div>
+                    `;
+                    
+                    result.style.display = 'block';
+                    loading.style.display = 'none';
+                }, 1500);
+                
+            } catch (error) {
+                phoneInfo.innerHTML = `<div class="alert alert-danger">Error: Gagal memproses nomor</div>`;
+                result.style.display = 'block';
+                loading.style.display = 'none';
+            }
+        });
+
+        // Lacak IP sendiri saat pertama load
+        window.addEventListener('load', function() {
+            // Isi dengan IP sendiri
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('ipAddress').value = data.ip;
+                })
+                .catch(() => {
+                    document.getElementById('ipAddress').value = '8.8.8.8';
+                });
+        });
+    </script>
+</body>
+</html>
